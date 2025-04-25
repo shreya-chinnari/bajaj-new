@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Doctor } from "@/services/doctor";
 import { getDoctors } from "@/services/doctor";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSearchParams, useRouter } from 'next/navigation'
+import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const SPECIALTIES = [
   "General Physician",
@@ -48,7 +51,7 @@ export default function Home() {
   const [consultationMode, setConsultationMode] = useState<string | null>(null);
   const [specialties, setSpecialties] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<string | null>(null);
-  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<string[]>([]);
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<Doctor[]>([]);
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -75,9 +78,9 @@ export default function Home() {
 
     if (consultationMode) {
       results = results.filter((doctor) =>
-      (doctor.video_consult === true && consultationMode === "Video Consult") ||
-      (doctor.in_clinic === true && consultationMode === "In Clinic")
-    );
+        (doctor.video_consult === true && consultationMode === "Video Consult") ||
+        (doctor.in_clinic === true && consultationMode === "In Clinic")
+      );
     }
 
     if (specialties.length > 0) {
@@ -132,16 +135,15 @@ export default function Home() {
         .filter((doctor) =>
           doctor.name.toLowerCase().startsWith(value.toLowerCase())
         )
-        .slice(0, 3)
-        .map((doctor) => doctor.name);
+        .slice(0, 3);
       setAutocompleteSuggestions(suggestions);
     } else {
       setAutocompleteSuggestions([]);
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion);
+  const handleSuggestionClick = (suggestion: Doctor) => {
+    setSearchTerm(suggestion.name);
     setAutocompleteSuggestions([]);
   };
 
@@ -166,27 +168,42 @@ export default function Home() {
   return (
     <div className="container mx-auto p-4">
       {/* Autocomplete Header */}
-      <div className="mb-4">
-        <Input
-          type="text"
-          placeholder="Search doctor..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          data-testid="autocomplete-input"
-        />
+      <div className="relative mb-4">
+        <div className="relative">
+          <Input
+            type="text"
+            placeholder="Search doctor..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            data-testid="autocomplete-input"
+            className="pl-10"
+          />
+          <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+        </div>
         {autocompleteSuggestions.length > 0 && (
-          <ul className="border rounded mt-1 py-2 px-4 bg-card shadow-md">
-            {autocompleteSuggestions.map((suggestion) => (
-              <li
-                key={suggestion}
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="cursor-pointer hover:bg-accent hover:text-accent-foreground py-1 px-2 rounded"
-                data-testid="suggestion-item"
-              >
-                {suggestion}
-              </li>
-            ))}
-          </ul>
+          <Card className="absolute top-12 left-0 w-full shadow-md">
+            <CardContent className="p-0">
+              <ul className="divide-y divide-border">
+                {autocompleteSuggestions.map((doctor) => (
+                  <li
+                    key={doctor.id}
+                    onClick={() => handleSuggestionClick(doctor)}
+                    className="flex items-center p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                    data-testid="suggestion-item"
+                  >
+                    <Avatar className="mr-2 h-8 w-8">
+                      <AvatarImage src={doctor.photo} alt={doctor.name} />
+                      <AvatarFallback>{doctor.name_initials}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold">{doctor.name}</p>
+                      <p className="text-sm text-muted-foreground">{doctor.specialities.map(s => s.name).join(", ")}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         )}
       </div>
 
@@ -247,6 +264,10 @@ export default function Home() {
               filteredDoctors.map((doctor) => (
                 <Card key={doctor.id} data-testid="doctor-card">
                   <CardContent>
+                    <Avatar className="mr-4 h-12 w-12">
+                      <AvatarImage src={doctor.photo} alt={doctor.name} />
+                      <AvatarFallback>{doctor.name_initials}</AvatarFallback>
+                    </Avatar>
                     <h2 className="text-lg font-semibold mb-2" data-testid="doctor-name">{doctor.name}</h2>
                     <p className="text-sm text-muted-foreground mb-2" data-testid="doctor-specialty">
                       {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
