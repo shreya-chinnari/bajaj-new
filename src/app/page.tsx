@@ -14,7 +14,7 @@ const SPECIALTIES = [
   "Dentist",
   "Dermatologist",
   "Paediatrician",
-  "Gynaecologist",
+  "Gynaecologist and Obstetrician",
   "ENT",
   "Diabetologist",
   "Cardiologist",
@@ -68,25 +68,29 @@ export default function Home() {
 
     if (searchTerm) {
       results = results.filter((doctor) =>
-        doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
+        doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doctor.specialities.some(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
     if (consultationMode) {
-      results = results.filter((doctor) => doctor.consultationMode === consultationMode);
+      results = results.filter((doctor) =>
+      (doctor.video_consult === true && consultationMode === "Video Consult") ||
+      (doctor.in_clinic === true && consultationMode === "In Clinic")
+    );
     }
 
     if (specialties.length > 0) {
       results = results.filter((doctor) =>
-        specialties.every((specialty) => doctor.specialty.includes(specialty))
+        specialties.every((specialty) => doctor.specialities.some(s => s.name === specialty))
       );
     }
 
     // Apply sorting
     if (sortOption === "fees") {
-      results.sort((a, b) => a.fee - b.fee);
+      results.sort((a, b) => parseInt(a.fees.replace(/[₹ ]/g, '')) - parseInt(b.fees.replace(/[₹ ]/g, '')));
     } else if (sortOption === "experience") {
-      results.sort((a, b) => b.experience - a.experience);
+      results.sort((a, b) => parseInt(b.experience.replace(/ Years of experience/g, '')) - parseInt(a.experience.replace(/ Years of experience/g, '')));
     }
 
     setFilteredDoctors(results);
@@ -245,12 +249,12 @@ export default function Home() {
                   <CardContent>
                     <h2 className="text-lg font-semibold mb-2" data-testid="doctor-name">{doctor.name}</h2>
                     <p className="text-sm text-muted-foreground mb-2" data-testid="doctor-specialty">
-                      {doctor.specialty?.join(", ") || "No specialty"}
+                      {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
                     </p>
                     <p className="text-sm mb-2" data-testid="doctor-experience">
-                      Experience: {doctor.experience} years
+                      Experience: {doctor.experience}
                     </p>
-                    <p className="text-sm" data-testid="doctor-fee">Fee: ${doctor.fee}</p>
+                    <p className="text-sm" data-testid="doctor-fee">Fee: {doctor.fees}</p>
                   </CardContent>
                 </Card>
               ))
