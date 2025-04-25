@@ -166,7 +166,7 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 bg-white">
       {/* Autocomplete Header */}
       <div className="relative mb-4">
         <div className="relative">
@@ -262,7 +262,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {doctors.length > 0 ? (
               filteredDoctors.map((doctor) => (
-                <Card key={doctor.id} data-testid="doctor-card" className="h-64">
+                <Card key={doctor.id} data-testid="doctor-card" className="h-72">
                   <CardContent>
                     <Avatar className="mr-4 h-20 w-20">
                       <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name} />
