@@ -291,7 +291,7 @@ export default function Home() {
                     </p>
                     <p className="text-sm w-full">Fee: {doctor.fees}</p>
                     <div className="mt-auto w-full">
-                      <Button size="sm" className="w-full">Book Appointment</Button>
+                      <Button size="sm" className="w-full" style={{ width: '300px' }}>Book Appointment</Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -306,3 +306,4 @@ export default function Home() {
     </div>
   );
 }
+
