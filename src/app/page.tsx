@@ -12,6 +12,7 @@ import {useSearchParams, useRouter} from 'next/navigation'
 import {Search, MapPin, Building, ChevronRight} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
+import {Suspense} from 'react';
 
 const SPECIALTIES = [
   "General Physician",
@@ -134,7 +135,7 @@ export default function Home() {
     if (value) {
       const suggestions = doctors
         .filter((doctor) =>
-          doctor.name.toLowerCase().startsWith(value.toLowerCase())
+          doctor.name.toLowerCase().includes(value.toLowerCase())
         )
         .slice(0, 3);
       setAutocompleteSuggestions(suggestions);
@@ -270,7 +271,8 @@ export default function Home() {
           <div className="md:col-span-3">
             <div className="grid grid-cols-1 gap-4">
               {doctors.length > 0 ? (
-                filteredDoctors.map((doctor) => (
+                <Suspense fallback={<p>Loading doctors...</p>}>
+                {filteredDoctors.map((doctor) => (
                   <Card key={doctor.id} data-testid="doctor-card" className="mb-4">
                     <CardContent className="flex flex-col items-start">
                       <Avatar className="mr-4 h-20 w-20 mb-4">
@@ -300,7 +302,8 @@ export default function Home() {
                       </div>
                     </CardContent>
                   </Card>
-                ))
+                ))}
+              </Suspense>
               ) : (
                 <p>Loading doctors...</p>
               )}
@@ -312,4 +315,3 @@ export default function Home() {
     </div>
   );
 }
-
