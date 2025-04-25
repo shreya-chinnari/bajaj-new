@@ -17,7 +17,7 @@ const SPECIALTIES = [
   "Dentist",
   "Dermatologist",
   "Paediatrician",
-  "Gynaecologist and Obstetrician",
+  "Gynaecologist",
   "ENT",
   "Diabetologist",
   "Cardiologist",
@@ -29,7 +29,7 @@ const SPECIALTIES = [
   "Pulmonologist",
   "Psychiatrist",
   "Urologist",
-  "Dietitian/Nutritionist",
+  "Dietitian-Nutritionist",
   "Psychologist",
   "Sexologist",
   "Nephrologist",
@@ -264,7 +264,7 @@ export default function Home() {
               filteredDoctors.map((doctor) => (
                 <Card key={doctor.id} data-testid="doctor-card">
                   <CardContent>
-                    <Avatar className="mr-4 h-12 w-12">
+                    <Avatar className="mr-4 h-8 w-8">
                       <AvatarImage src={doctor.photo} alt={doctor.name} />
                       <AvatarFallback>{doctor.name_initials}</AvatarFallback>
                     </Avatar>
@@ -289,3 +289,4 @@ export default function Home() {
     </div>
   );
 }
+
