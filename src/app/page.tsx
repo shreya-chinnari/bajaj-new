@@ -167,143 +167,148 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-white">
-      {/* Autocomplete Header */}
-      <div className="relative mb-4">
-        <div className="relative">
-          <Input
-            type="text"
-            placeholder="Search doctor..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-            data-testid="autocomplete-input"
-            className="pl-10"
-          />
-          <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+    <div className="bg-white">
+      <div className="bg-primary py-4">
+        <div className="container mx-auto p-4 relative">
+          {/* Autocomplete Header */}
+          <div className="relative">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Search doctor..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                data-testid="autocomplete-input"
+                className="pl-10"
+              />
+              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+            </div>
+            {autocompleteSuggestions.length > 0 && (
+              <Card className="absolute top-12 left-0 w-full shadow-md">
+                <CardContent className="p-0">
+                  <ul className="divide-y divide-border">
+                    {autocompleteSuggestions.map((doctor) => (
+                      <li
+                        key={doctor.id}
+                        onClick={() => handleSuggestionClick(doctor)}
+                        className="flex items-center justify-between p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                        data-testid="suggestion-item"
+                      >
+                        <div className="flex items-center">
+                          <Avatar className="mr-2 h-8 w-8">
+                            <AvatarImage style={{ marginTop: '0.5rem' }} src={doctor.photo} alt={doctor.name} />
+                            <AvatarFallback>{doctor.name_initials}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-semibold">{doctor.name}</p>
+                            <p className="text-sm text-muted-foreground">{doctor.specialities.map(s => s.name).join(", ")}</p>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
-        {autocompleteSuggestions.length > 0 && (
-          <Card className="absolute top-12 left-0 w-full shadow-md">
-            <CardContent className="p-0">
-              <ul className="divide-y divide-border">
-                {autocompleteSuggestions.map((doctor) => (
-                  <li
-                    key={doctor.id}
-                    onClick={() => handleSuggestionClick(doctor)}
-                    className="flex items-center justify-between p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer"
-                    data-testid="suggestion-item"
-                  >
-                    <div className="flex items-center">
-                      <Avatar className="mr-2 h-8 w-8">
+      </div>
+
+      <div className="container mx-auto p-4">
+        {/* Filter Panel */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="md:col-span-1">
+            {/* Consultation Mode Filter */}
+            <div className="mb-4">
+              <h3 className="font-semibold mb-2" data-testid="filter-header-moc">Consultation Mode</h3>
+              <RadioGroup defaultValue={consultationMode || undefined} onValueChange={handleConsultationModeChange}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Video Consult" id="video" data-testid="filter-video-consult" />
+                  <label htmlFor="video" className="cursor-pointer">Video Consult</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="In Clinic" id="clinic" data-testid="filter-in-clinic" />
+                  <label htmlFor="clinic" className="cursor-pointer">In Clinic</label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Specialties Filter */}
+            <div className="mb-4">
+              <h3 className="font-semibold mb-2" data-testid="filter-header-speciality">Specialties</h3>
+              {SPECIALTIES.map((specialty) => (
+                <div key={specialty} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={specialty}
+                    checked={specialties.includes(specialty)}
+                    onCheckedChange={() => handleSpecialtyChange(specialty)}
+                    data-testid={`filter-specialty-${specialty.replace(/[/ ]/g, '-')}`}
+                  />
+                  <label htmlFor={specialty} className="cursor-pointer">{specialty}</label>
+                </div>
+              ))}
+            </div>
+
+            {/* Sort Filter */}
+            <div>
+              <h3 className="font-semibold mb-2" data-testid="filter-header-sort">Sort by</h3>
+              <RadioGroup defaultValue={sortOption || undefined} onValueChange={handleSortOptionChange}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="fees" id="fees" data-testid="sort-fees" />
+                  <label htmlFor="fees" className="cursor-pointer">Fees (Low to High)</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="experience" id="experience" data-testid="sort-experience" />
+                  <label htmlFor="experience" className="cursor-pointer">Experience (High to Low)</label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+
+          {/* Doctor List */}
+          <div className="md:col-span-3">
+            <div className="grid grid-cols-1 gap-4">
+              {doctors.length > 0 ? (
+                filteredDoctors.map((doctor) => (
+                  <Card key={doctor.id} data-testid="doctor-card" className="mb-4">
+                    <CardContent className="flex flex-col items-start">
+                      <Avatar className="mr-4 h-20 w-20 mb-4">
                         <AvatarImage style={{ marginTop: '0.5rem' }} src={doctor.photo} alt={doctor.name} />
                         <AvatarFallback>{doctor.name_initials}</AvatarFallback>
                       </Avatar>
-                      <div>
-                        <p className="font-semibold">{doctor.name}</p>
-                        <p className="text-sm text-muted-foreground">{doctor.specialities.map(s => s.name).join(", ")}</p>
+                      <h2 className="text-lg font-semibold mb-2 text-left w-full"
+                          data-testid="doctor-name">{doctor.name}</h2>
+                      <p className="text-sm text-muted-foreground mb-2 text-left w-full"
+                         data-testid="doctor-specialty">
+                        {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
+                      </p>
+                      <div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
+                        <MapPin className="mr-1 h-4 w-4"/>
+                        <span>{doctor.clinic.address.locality}, {doctor.clinic.address.city}</span>
                       </div>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Filter Panel */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="md:col-span-1">
-          {/* Consultation Mode Filter */}
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2" data-testid="filter-header-moc">Consultation Mode</h3>
-            <RadioGroup defaultValue={consultationMode || undefined} onValueChange={handleConsultationModeChange}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Video Consult" id="video" data-testid="filter-video-consult" />
-                <label htmlFor="video" className="cursor-pointer">Video Consult</label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="In Clinic" id="clinic" data-testid="filter-in-clinic" />
-                <label htmlFor="clinic" className="cursor-pointer">In Clinic</label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Specialties Filter */}
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2" data-testid="filter-header-speciality">Specialties</h3>
-            {SPECIALTIES.map((specialty) => (
-              <div key={specialty} className="flex items-center space-x-2">
-                <Checkbox
-                  id={specialty}
-                  checked={specialties.includes(specialty)}
-                  onCheckedChange={() => handleSpecialtyChange(specialty)}
-                  data-testid={`filter-specialty-${specialty.replace(/[/ ]/g, '-')}`}
-                />
-                <label htmlFor={specialty} className="cursor-pointer">{specialty}</label>
-              </div>
-            ))}
-          </div>
-
-          {/* Sort Filter */}
-          <div>
-            <h3 className="font-semibold mb-2" data-testid="filter-header-sort">Sort by</h3>
-            <RadioGroup defaultValue={sortOption || undefined} onValueChange={handleSortOptionChange}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="fees" id="fees" data-testid="sort-fees" />
-                <label htmlFor="fees" className="cursor-pointer">Fees (Low to High)</label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="experience" id="experience" data-testid="sort-experience" />
-                <label htmlFor="experience" className="cursor-pointer">Experience (High to Low)</label>
-              </div>
-            </RadioGroup>
-          </div>
-        </div>
-
-        {/* Doctor List */}
-        <div className="md:col-span-3">
-          <div className="grid grid-cols-1 gap-4">
-            {doctors.length > 0 ? (
-              filteredDoctors.map((doctor) => (
-                <Card key={doctor.id} data-testid="doctor-card" className="mb-4">
-                  <CardContent className="flex flex-col items-start">
-                    <Avatar className="mr-4 h-20 w-20 mb-4">
-                      <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name}/>
-                      <AvatarFallback>{doctor.name_initials}</AvatarFallback>
-                    </Avatar>
-                    <h2 className="text-lg font-semibold mb-2 text-left w-full"
-                        data-testid="doctor-name">{doctor.name}</h2>
-                    <p className="text-sm text-muted-foreground mb-2 text-left w-full"
-                       data-testid="doctor-specialty">
-                      {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
-                    </p>
-                    <div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
-                      <MapPin className="mr-1 h-4 w-4"/>
-                      <span>{doctor.clinic.address.locality}, {doctor.clinic.address.city}</span>
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
-                      <Building className="mr-1 h-4 w-4"/>
-                      <span>{doctor.clinic.address.address_line1}</span>
-                    </div>
-                    <p className="text-sm mb-2 w-full" data-testid="doctor-experience">
-                      Experience: {doctor.experience}
-                    </p>
-                    <p className="text-sm w-full">Fee: {doctor.fees}</p>
-                    <div className="mt-auto w-full">
-                      <Button size="sm" className="w-full" style={{ width: '300px' }}>Book Appointment</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <p>Loading doctors...</p>
-            )}
-            {filteredDoctors.length === 0 && <p>No doctors found matching your criteria.</p>}
+                      <div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
+                        <Building className="mr-1 h-4 w-4"/>
+                        <span>{doctor.clinic.address.address_line1}</span>
+                      </div>
+                      <p className="text-sm mb-2 w-full" data-testid="doctor-experience">
+                        Experience: {doctor.experience}
+                      </p>
+                      <p className="text-sm w-full">Fee: {doctor.fees}</p>
+                      <div className="mt-auto w-full">
+                        <Button size="sm" className="w-full" style={{ width: '300px' }}>Book Appointment</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <p>Loading doctors...</p>
+              )}
+              {filteredDoctors.length === 0 && <p>No doctors found matching your criteria.</p>}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
