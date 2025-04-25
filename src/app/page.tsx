@@ -11,6 +11,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const SPECIALTIES = [
   "General Physician",
@@ -84,9 +85,9 @@ export default function Home() {
     }
 
     if (specialties.length > 0) {
-      results = results.filter((doctor) =>
-        doctor.specialities.some(s => specialties.includes(s.name))
-      );
+        results = results.filter(doctor =>
+            doctor.specialities.some(s => specialties.includes(s.name))
+        );
     }
 
     // Apply sorting
@@ -263,7 +264,7 @@ export default function Home() {
             {doctors.length > 0 ? (
               filteredDoctors.map((doctor) => (
                 <Card key={doctor.id} data-testid="doctor-card" className="h-72">
-                  <CardContent>
+                  <CardContent className="flex flex-col">
                     <Avatar className="mr-4 h-20 w-20">
                       <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name} />
                       <AvatarFallback>{doctor.name_initials}</AvatarFallback>
@@ -275,7 +276,10 @@ export default function Home() {
                     <p className="text-sm mb-2" data-testid="doctor-experience">
                       Experience: {doctor.experience}
                     </p>
-                    <p className="text-sm" data-testid="doctor-fee">Fee: {doctor.fees}</p>
+                    <p className="text-sm">Fee: {doctor.fees}</p>
+                    <div className="mt-auto">
+                        <Button>Book Appointment</Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))
@@ -289,3 +293,4 @@ export default function Home() {
     </div>
   );
 }
+
