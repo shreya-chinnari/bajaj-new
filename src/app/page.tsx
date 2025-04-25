@@ -273,6 +273,12 @@ export default function Home() {
                     <p className="text-sm text-muted-foreground mb-2" data-testid="doctor-specialty">
                       {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
                     </p>
+                     <p className="text-sm text-muted-foreground mb-2">
+                      {doctor.clinic.address.locality}, {doctor.clinic.address.city}
+                    </p>
+                     <p className="text-sm text-muted-foreground mb-2">
+                      {doctor.clinic.address.address_line1}
+                    </p>
                     <p className="text-sm mb-2" data-testid="doctor-experience">
                       Experience: {doctor.experience}
                     </p>
@@ -293,4 +299,5 @@ export default function Home() {
     </div>
   );
 }
+
 
