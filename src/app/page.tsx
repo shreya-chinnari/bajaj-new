@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Search } from "lucide-react";
+import { Search, MapPin, Building } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -84,7 +84,7 @@ export default function Home() {
       );
     }
 
-    if (specialties.length > 0) {
+   if (specialties.length > 0) {
         results = results.filter(doctor =>
             doctor.specialities.some(s => specialties.includes(s.name))
         );
@@ -273,12 +273,14 @@ export default function Home() {
                     <p className="text-sm text-muted-foreground mb-2" data-testid="doctor-specialty">
                       {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
                     </p>
-                     <p className="text-sm text-muted-foreground mb-2">
-                      {doctor.clinic.address.locality}, {doctor.clinic.address.city}
-                    </p>
-                     <p className="text-sm text-muted-foreground mb-2">
-                      {doctor.clinic.address.address_line1}
-                    </p>
+                    <div className="flex items-center text-sm text-muted-foreground mb-1">
+                        <MapPin className="mr-1 h-4 w-4" />
+                        <span>{doctor.clinic.address.locality}, {doctor.clinic.address.city}</span>
+                    </div>
+                     <div className="flex items-center text-sm text-muted-foreground mb-1">
+                        <Building className="mr-1 h-4 w-4" />
+                        <span>{doctor.clinic.address.address_line1}</span>
+                    </div>
                     <p className="text-sm mb-2" data-testid="doctor-experience">
                       Experience: {doctor.experience}
                     </p>
@@ -299,5 +301,3 @@ export default function Home() {
     </div>
   );
 }
-
-
