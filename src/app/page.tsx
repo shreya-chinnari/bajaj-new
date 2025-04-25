@@ -239,20 +239,24 @@ export default function Home() {
         {/* Doctor List */}
         <div className="md:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredDoctors.map((doctor) => (
-              <Card key={doctor.id} data-testid="doctor-card">
-                <CardContent>
-                  <h2 className="text-lg font-semibold mb-2" data-testid="doctor-name">{doctor.name}</h2>
-                  <p className="text-sm text-muted-foreground mb-2" data-testid="doctor-specialty">
-                    {doctor.specialty.join(", ")}
-                  </p>
-                  <p className="text-sm mb-2" data-testid="doctor-experience">
-                    Experience: {doctor.experience} years
-                  </p>
-                  <p className="text-sm" data-testid="doctor-fee">Fee: ${doctor.fee}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {doctors.length > 0 ? (
+              filteredDoctors.map((doctor) => (
+                <Card key={doctor.id} data-testid="doctor-card">
+                  <CardContent>
+                    <h2 className="text-lg font-semibold mb-2" data-testid="doctor-name">{doctor.name}</h2>
+                    <p className="text-sm text-muted-foreground mb-2" data-testid="doctor-specialty">
+                      {doctor.specialty?.join(", ") || "No specialty"}
+                    </p>
+                    <p className="text-sm mb-2" data-testid="doctor-experience">
+                      Experience: {doctor.experience} years
+                    </p>
+                    <p className="text-sm" data-testid="doctor-fee">Fee: ${doctor.fee}</p>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p>Loading doctors...</p>
+            )}
             {filteredDoctors.length === 0 && <p>No doctors found matching your criteria.</p>}
           </div>
         </div>
