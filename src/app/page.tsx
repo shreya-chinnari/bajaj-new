@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Doctor } from "@/services/doctor";
+import type { Doctor } from "@/services/doctor";
 import { getDoctors } from "@/services/doctor";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -84,8 +84,8 @@ export default function Home() {
     }
 
     if (specialties.length > 0) {
-      results = results.filter((doctor) =>
-        specialties.every((specialty) => doctor.specialities.some(s => s.name === specialty))
+       results = results.filter((doctor) =>
+        doctor.specialities.some(s => specialties.includes(s.name))
       );
     }
 
@@ -192,7 +192,7 @@ export default function Home() {
                     data-testid="suggestion-item"
                   >
                     <Avatar className="mr-2 h-8 w-8">
-                      <AvatarImage src={doctor.photo} alt={doctor.name} />
+                      <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name} />
                       <AvatarFallback>{doctor.name_initials}</AvatarFallback>
                     </Avatar>
                     <div>
@@ -262,10 +262,10 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {doctors.length > 0 ? (
               filteredDoctors.map((doctor) => (
-                <Card key={doctor.id} data-testid="doctor-card">
+                <Card key={doctor.id} data-testid="doctor-card" className="h-64">
                   <CardContent>
-                    <Avatar className="mr-4 h-8 w-8">
-                      <AvatarImage src={doctor.photo} alt={doctor.name} />
+                    <Avatar className="mr-4 h-20 w-20">
+                      <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name} />
                       <AvatarFallback>{doctor.name_initials}</AvatarFallback>
                     </Avatar>
                     <h2 className="text-lg font-semibold mb-2" data-testid="doctor-name">{doctor.name}</h2>
@@ -289,4 +289,3 @@ export default function Home() {
     </div>
   );
 }
-
