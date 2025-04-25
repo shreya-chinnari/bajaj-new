@@ -294,154 +294,98 @@ export default function Home() {
 								</RadioGroup>
 							</div>
 
-							{/* Specialties Filter */}
+							{/* Specialty Filter */}
 							<div className="mb-4">
 								<h3
 									className="font-semibold mb-2"
-									data-testid="filter-header-speciality"
+									data-testid="filter-header-specialties"
 								>
 									Specialties
 								</h3>
-								{SPECIALTIES.map((specialty) => (
-									<div
-										key={specialty}
-										className="flex items-center space-x-2"
-									>
-										<Checkbox
-											id={specialty}
-											checked={specialties.includes(specialty)}
-											onCheckedChange={() => handleSpecialtyChange(specialty)}
-											data-testid={`filter-specialty-${specialty.replace(
-												/[/ ]/g,
-												"-"
-											)}`}
-										/>
-										<label
-											htmlFor={specialty}
-											className="cursor-pointer"
+								<div>
+									{SPECIALTIES.map((specialty) => (
+										<div
+											key={specialty}
+											className="flex items-center space-x-2"
 										>
-											{specialty}
-										</label>
-									</div>
-								))}
+											<Checkbox
+												checked={specialties.includes(specialty)}
+												onChange={() => handleSpecialtyChange(specialty)}
+												id={specialty}
+												data-testid={`filter-${specialty}`}
+											/>
+											<label
+												htmlFor={specialty}
+												className="cursor-pointer"
+											>
+												{specialty}
+											</label>
+										</div>
+									))}
+								</div>
 							</div>
 
-							{/* Sort Filter */}
-							<div>
-								<h3
-									className="font-semibold mb-2"
-									data-testid="filter-header-sort"
-								>
-									Sort by
-								</h3>
-								<RadioGroup
-									defaultValue={sortOption || undefined}
-									onValueChange={handleSortOptionChange}
-								>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem
-											value="fees"
-											id="fees"
-											data-testid="sort-fees"
-										/>
-										<label
-											htmlFor="fees"
-											className="cursor-pointer"
-										>
-											Fees (Low to High)
-										</label>
-									</div>
-									<div className="flex items-center space-x-2">
-										<RadioGroupItem
-											value="experience"
-											id="experience"
-											data-testid="sort-experience"
-										/>
-										<label
-											htmlFor="experience"
-											className="cursor-pointer"
-										>
-											Experience (High to Low)
-										</label>
-									</div>
-								</RadioGroup>
+							{/* Sort By */}
+							<div className="mb-4">
+								<h3 className="font-semibold mb-2">Sort By</h3>
+								<div className="space-y-2">
+									<Button
+										onClick={() => handleSortOptionChange("fees")}
+										variant={sortOption === "fees" ? "outline" : "default"}
+										data-testid="sort-by-fees"
+									>
+										Fees
+									</Button>
+									<Button
+										onClick={() => handleSortOptionChange("experience")}
+										variant={
+											sortOption === "experience" ? "outline" : "default"
+										}
+										data-testid="sort-by-experience"
+									>
+										Experience
+									</Button>
+								</div>
 							</div>
 						</div>
 
 						{/* Doctor List */}
 						<div className="md:col-span-3">
-							<div className="grid grid-cols-1 gap-4">
-								{doctors.length > 0 ? (
-									<Suspense fallback={<p>Loading doctors...</p>}>
-										{filteredDoctors.map((doctor) => (
-											<Card
-												key={doctor.id}
-												data-testid="doctor-card"
-												className="mb-4"
-											>
-												<CardContent className="flex flex-col items-start">
-													<Avatar className="mr-4 h-20 w-20 mb-4">
+							{/* Doctor Cards */}
+							{filteredDoctors.length > 0 ? (
+								<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+									{filteredDoctors.map((doctor) => (
+										<Card key={doctor.id}>
+											<CardContent>
+												<div className="flex">
+													<Avatar>
 														<AvatarImage
-															style={{ marginTop: "0.5rem" }}
 															src={doctor.photo}
 															alt={doctor.name}
 														/>
-														<AvatarFallback>
-															{doctor.name_initials}
-														</AvatarFallback>
 													</Avatar>
-													<h2
-														className="text-lg font-semibold mb-2 text-left w-full"
-														data-testid="doctor-name"
-													>
-														{doctor.name}
-													</h2>
-													<p
-														className="text-sm text-muted-foreground mb-2 text-left w-full"
-														data-testid="doctor-specialty"
-													>
-														{doctor.specialities
-															.map((s) => s.name)
-															.join(", ") || "No specialty"}
-													</p>
-													<div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
-														<MapPin className="mr-1 h-4 w-4" />
-														<span>
-															{doctor.clinic.address.locality},{" "}
-															{doctor.clinic.address.city}
-														</span>
+													<div className="ml-4">
+														<p className="font-semibold text-lg">
+															{doctor.name}
+														</p>
+														<p>
+															{doctor.specialities
+																.map((s) => s.name)
+																.join(", ")}
+														</p>
+														<p className="text-sm text-muted-foreground">
+															{doctor.experience} years of experience
+														</p>
+														<p className="font-bold">{doctor.fees}</p>
 													</div>
-													<div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
-														<Building className="mr-1 h-4 w-4" />
-														<span>{doctor.clinic.address.address_line1}</span>
-													</div>
-													<p
-														className="text-sm mb-2 w-full"
-														data-testid="doctor-experience"
-													>
-														Experience: {doctor.experience}
-													</p>
-													<p className="text-sm w-full">Fee: {doctor.fees}</p>
-													<div className="mt-auto w-full">
-														<Button
-															size="sm"
-															className="w-full"
-															style={{ width: "300px" }}
-														>
-															Book Appointment
-														</Button>
-													</div>
-												</CardContent>
-											</Card>
-										))}
-									</Suspense>
-								) : (
-									<p>Loading doctors...</p>
-								)}
-								{filteredDoctors.length === 0 && (
-									<p>No doctors found matching your criteria.</p>
-								)}
-							</div>
+												</div>
+											</CardContent>
+										</Card>
+									))}
+								</div>
+							) : (
+								<p>No doctors found matching your criteria.</p>
+							)}
 						</div>
 					</div>
 				</div>
