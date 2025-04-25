@@ -263,7 +263,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {doctors.length > 0 ? (
               filteredDoctors.map((doctor) => (
-                <Card key={doctor.id} data-testid="doctor-card" className="h-72">
+                <Card key={doctor.id} data-testid="doctor-card" className="h-80">
                   <CardContent className="flex flex-col">
                     <Avatar className="mr-4 h-20 w-20">
                       <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name} />
@@ -301,3 +301,4 @@ export default function Home() {
     </div>
   );
 }
+
