@@ -84,10 +84,10 @@ export default function Home() {
       );
     }
 
-   if (specialties.length > 0) {
-        results = results.filter(doctor =>
-            doctor.specialities.some(s => specialties.includes(s.name))
-        );
+    if (specialties.length > 0) {
+      results = results.filter(doctor =>
+          doctor.specialities.some(s => specialties.includes(s.name))
+      );
     }
 
     // Apply sorting
@@ -260,45 +260,44 @@ export default function Home() {
 
         {/* Doctor List */}
         <div className="md:col-span-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {doctors.length > 0 ? (
-              filteredDoctors.map((doctor) => (
-                <Card key={doctor.id} data-testid="doctor-card" className="h-80">
-                  <CardContent className="flex flex-col">
-                    <Avatar className="mr-4 h-20 w-20">
-                      <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name} />
-                      <AvatarFallback>{doctor.name_initials}</AvatarFallback>
-                    </Avatar>
-                    <h2 className="text-lg font-semibold mb-2" data-testid="doctor-name">{doctor.name}</h2>
-                    <p className="text-sm text-muted-foreground mb-2" data-testid="doctor-specialty">
-                      {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
-                    </p>
-                    <div className="flex items-center text-sm text-muted-foreground mb-1">
-                        <MapPin className="mr-1 h-4 w-4" />
-                        <span>{doctor.clinic.address.locality}, {doctor.clinic.address.city}</span>
-                    </div>
-                     <div className="flex items-center text-sm text-muted-foreground mb-1">
-                        <Building className="mr-1 h-4 w-4" />
-                        <span>{doctor.clinic.address.address_line1}</span>
-                    </div>
-                    <p className="text-sm mb-2" data-testid="doctor-experience">
-                      Experience: {doctor.experience}
-                    </p>
-                    <p className="text-sm">Fee: {doctor.fees}</p>
-                    <div className="mt-auto">
-                        <Button>Book Appointment</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <p>Loading doctors...</p>
-            )}
-            {filteredDoctors.length === 0 && <p>No doctors found matching your criteria.</p>}
-          </div>
+            <div className="grid grid-cols-1 gap-4">
+                {doctors.length > 0 ? (
+                    filteredDoctors.map((doctor) => (
+                        <Card key={doctor.id} data-testid="doctor-card" className="mb-4">
+                            <CardContent className="flex flex-col items-start">
+                                <Avatar className="mr-4 h-20 w-20 mb-4">
+                                    <AvatarImage style={{ marginTop: '0.5rem' }} src={doctor.photo} alt={doctor.name} />
+                                    <AvatarFallback>{doctor.name_initials}</AvatarFallback>
+                                </Avatar>
+                                <h2 className="text-lg font-semibold mb-2 text-left w-full" data-testid="doctor-name">{doctor.name}</h2>
+                                <p className="text-sm text-muted-foreground mb-2 text-left w-full" data-testid="doctor-specialty">
+                                    {doctor.specialities.map(s => s.name).join(", ") || "No specialty"}
+                                </p>
+                                <div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
+                                    <MapPin className="mr-1 h-4 w-4" />
+                                    <span>{doctor.clinic.address.locality}, {doctor.clinic.address.city}</span>
+                                </div>
+                                <div className="flex items-center text-sm text-muted-foreground mb-1 w-full">
+                                    <Building className="mr-1 h-4 w-4" />
+                                    <span>{doctor.clinic.address.address_line1}</span>
+                                </div>
+                                <p className="text-sm mb-2 w-full" data-testid="doctor-experience">
+                                    Experience: {doctor.experience}
+                                </p>
+                                <p className="text-sm w-full">Fee: {doctor.fees}</p>
+                                <div className="mt-auto w-full">
+                                    <Button className="w-full">Book Appointment</Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))
+                ) : (
+                    <p>Loading doctors...</p>
+                )}
+                {filteredDoctors.length === 0 && <p>No doctors found matching your criteria.</p>}
+            </div>
         </div>
       </div>
     </div>
   );
 }
-
