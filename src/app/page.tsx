@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Search, MapPin, Building } from "lucide-react";
+import { Search, MapPin, Building, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -189,17 +189,20 @@ export default function Home() {
                   <li
                     key={doctor.id}
                     onClick={() => handleSuggestionClick(doctor)}
-                    className="flex items-center p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                    className="flex items-center justify-between p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer"
                     data-testid="suggestion-item"
                   >
-                    <Avatar className="mr-2 h-8 w-8">
-                      <AvatarImage style={{marginTop: '0.5rem'}} src={doctor.photo} alt={doctor.name} />
-                      <AvatarFallback>{doctor.name_initials}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold">{doctor.name}</p>
-                      <p className="text-sm text-muted-foreground">{doctor.specialities.map(s => s.name).join(", ")}</p>
+                    <div className="flex items-center">
+                      <Avatar className="mr-2 h-8 w-8">
+                        <AvatarImage style={{ marginTop: '0.5rem' }} src={doctor.photo} alt={doctor.name} />
+                        <AvatarFallback>{doctor.name_initials}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold">{doctor.name}</p>
+                        <p className="text-sm text-muted-foreground">{doctor.specialities.map(s => s.name).join(", ")}</p>
+                      </div>
                     </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </li>
                 ))}
               </ul>
@@ -301,4 +304,3 @@ export default function Home() {
     </div>
   );
 }
-
