@@ -84,7 +84,7 @@ export default function Home() {
     }
 
     if (specialties.length > 0) {
-       results = results.filter((doctor) =>
+      results = results.filter((doctor) =>
         doctor.specialities.some(s => specialties.includes(s.name))
       );
     }
